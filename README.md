@@ -2,341 +2,229 @@
 
 # Epoch
 
-### The Development Operating System
+### The AI Development Operating System
 
-*Turn your entire product, organization, and workflow into a single executable, versioned system.*
+*The organizational runtime that lets AI agents understand, navigate, and operate across your entire engineering organization — not just one repository at a time.*
 
 </div>
 
 ---
 
-Software organizations don't just write code.
-They coordinate architecture, infrastructure, contracts, reliability, cost, security, compliance, product evolution, and knowledge - across time.
+AI coding tools are good. Most engineering teams are already using them.
 
-Today, this coordination lives in:
+But they're all doing the same thing: AI works on one file, one repository, one task at a time. A fast and capable worker — but narrow. The AI doesn't know what it doesn't know, and what it doesn't know is almost everything about your organization.
 
-- Repositories
-- CI pipelines
-- Ticketing systems
-- Wiki pages
-- Dashboards
-- Slack threads
-- Tribal memory
+Which services depend on the change it's making.
+Whether that change violates an architectural rule your team agreed on two years ago.
+Who owns the affected system, and how critical it is.
+What your actual deployment process looks like — not the generic one, *yours*.
+Which APIs are stable contracts and which are internal details that will change next quarter.
+What migrations are in progress, what systems are being deprecated, what decisions have already been made.
 
-**Each tool solves a fragment. No system understands the whole.**
+So engineers compensate. They provide the organizational context manually. They do the cross-repo impact assessment, the ownership lookup, the policy check. The AI generates; the human coordinates.
 
-Epoch is a Development Operating System built to unify the entire engineering surface into one executable system.
+**This doesn't scale. And it puts a ceiling on how autonomous AI can become in your organization.**
 
----
-
-## The Problem: Fragmented Reality
-
-Modern R&D teams operate across disconnected layers:
-
-| Dimension | What Goes Wrong |
-|-----------|----------------|
-| **Code ↔ Infrastructure** | Evolve on separate timelines with separate owners |
-| **API Contracts ↔ Implementations** | Drift silently until something breaks in production |
-| **Tests ↔ Behavior** | Coverage lags behind reality, creating a false sense of safety |
-| **Ownership** | Implicit, tribal, discovered only during incidents |
-| **Observability** | Reactive — you learn about problems after users do |
-| **Security Policies** | External documents disconnected from the code they govern |
-| **Cost Awareness** | Delayed — discovered at month-end, not at deploy-time |
-| **AI Tools** | Lack full-system context, operating on file-level fragments |
-
-Every change requires coordination across dimensions that the system does not model.
-
-**This is not a tooling issue. It is a systems issue.**
-
-> Today's engineering organizations run on tools designed for isolated concerns. Git tracks files. CI runs tasks. Jira tracks tickets. Terraform tracks infra. Datadog tracks metrics. Each one is a silo with its own model of the world. The cognitive load of stitching these together falls entirely on engineers — and it doesn't scale. Epoch's thesis is that the *coordination layer itself* must become a first-class, programmable system.
+Epoch removes that ceiling — by building the organizational context layer that AI agents are missing.
 
 ---
 
-## The Foundation: OmniRepo
+## The Problem Is Context, Not Capability
 
-Epoch begins with the **OmniRepo**.
+The gap between "AI writes code I review" and "AI ships features while I sleep" is not a model capability problem.
 
-An OmniRepo is not just a monorepo. It is the **complete, versioned product graph** — the single representation of everything your organization builds, runs, and maintains.
+It is an organizational context problem.
 
-It includes:
+For an AI agent to operate autonomously across an engineering organization — not just within a single file — it needs a live model of that organization. Not documentation. Not wiki pages. A **versioned, queryable representation** of:
 
-- **Application code** — backend, frontend, workers, CLIs
-- **API schemas & generated clients** — the contracts between systems
-- **Infrastructure definitions** — IaC that lives alongside what it provisions
-- **Deployment topology** — how services map to environments and regions
-- **Test suites** — unit, integration, end-to-end, and browser tests
-- **Data schemas & migrations** — the shape and evolution of your data
-- **Ownership & domain boundaries** — who owns what, and where the seams are
-- **Security & compliance policies** — encoded constraints, not PDF attachments
-- **Build & release logic** — how artifacts are produced and shipped
-- **Versioned skills** — your organization's executable institutional knowledge
+- Every service, API, data store, and infrastructure component, and how they relate
+- Who owns what, what tier it is, what its current lifecycle state is
+- The architectural rules, security constraints, and deployment guardrails that govern change
+- The actual processes your team uses — the ones that live in senior engineers' heads
+- The current state of production: health, cost, reliability, recent changes
 
-**Everything is committed. Everything is reviewable. Everything is reproducible.**
+None of this exists in a form that AI agents can reason over today. It lives in fragmented tools, tribal knowledge, and documentation that may or may not reflect reality.
 
-The OmniRepo is the static source of truth.
-Epoch is the system that executes it.
-
-> The monorepo movement (Nx, Bazel, Turborepo) proved that co-locating code yields massive benefits: atomic commits, unified CI, simplified dependency management. But monorepos still only model *code*. The OmniRepo extends this to model the entire product surface — infrastructure, policies, ownership, contracts — as a single versioned graph. This is what makes system-level reasoning possible.
+**Epoch makes your organization legible to AI.**
 
 ---
 
-## Beyond Pipelines: From Automation to Coordination
+## What Epoch Is
 
-DevOps automated builds and deployments.
+Epoch is the **organizational runtime** for AI-assisted development.
 
-**Epoch models coordination itself.**
+An operating system doesn't execute your programs — it provides the environment that programs run within. Epoch is that, for AI agents operating inside an engineering organization. The agents are Claude, Cursor, Copilot, or whatever comes next. Epoch doesn't replace them or try to orchestrate them. It provides the environment they operate within: the organizational context that turns a capable-but-narrow agent into one that can safely operate across your entire engineering surface.
 
-When a change is proposed, Epoch understands:
-
-- **Architectural impact** — which boundaries does this cross?
-- **Dependency propagation** — what downstream systems are affected?
-- **API compatibility** — does this break a contract?
-- **Test surface coverage** — is the change adequately verified?
-- **Security implications** — does this introduce new attack surface?
-- **Cost impact** — will this change the infrastructure bill?
-- **Reliability exposure** — does this affect a Tier 1 service's SLO?
-- **Release strategy alignment** — does this fit the current rollout plan?
-- **Ownership responsibilities** — who needs to review and approve?
-
-Changes are not just compiled. **They are evaluated across the full product dimension.**
-
-> Think of what happens today when an engineer opens a pull request that modifies an API schema, updates a Terraform module, and changes a database migration. The CI pipeline runs tests. Maybe a linter catches a formatting issue. But nobody automatically knows that the API change breaks a mobile client three repos away, that the Terraform change will increase costs by 40%, or that the migration will lock a table during peak traffic. Epoch's coordination layer computes this *before* the change lands — not because it's magic, but because the graph makes these relationships explicit and queryable.
+Three things compose that environment:
 
 ---
 
-## Skills: Executable Knowledge
+### The OmniRepo Graph
 
-R&D teams run on process:
+The graph is the foundation. It is a live, versioned, queryable model of your engineering organization — derived continuously from source, not maintained by hand.
 
-- Migrate a service to a new runtime
-- Deprecate an API version
-- Roll out a feature flag
-- Respond to a production incident
-- Rotate credentials and secrets
-- Patch a vulnerability across services
-- Upgrade a framework or major dependency
-- Launch a new region or availability zone
-- Archive a product line
+Node types: Service, Package, API, Infrastructure, DataStore, Team, Policy
+Edge types: dependsOn, ownedBy, exposesAPI, consumesAPI, deployedTo, governedBy
 
-Today, these live as documentation, runbooks, and hard-won experience. They're fragile, out of date, and locked in the heads of senior engineers.
+The graph is built by scanning what you already have: repositories, Kubernetes manifests, Terraform definitions, OpenAPI specs, protobuf schemas, package manifests, and ownership files. It does not require a migration or a new way of working — it reads what exists.
 
-**In Epoch, they become versioned skills.**
+```bash
+$ epoch scan
+Discovered 14 services, 6 APIs, 3 databases, 2 K8s clusters, 47 packages
 
-A skill is:
+$ epoch query "what breaks if I remove GET /users/:id?"
+  → auth-service (calls this endpoint in token validation)
+  → admin-dashboard (calls this endpoint on user detail page)
+  → mobile-api-gateway (proxies this route)
 
-| Property | Meaning |
-|----------|---------|
-| **Declarative** | Describes *what* should happen, not just *how* |
-| **Graph-aware** | Understands the full system context it operates within |
-| **Policy-bound** | Respects organizational constraints and guardrails |
-| **Composable** | Skills can invoke other skills, building complex workflows from primitives |
-| **Executable** | Not documentation — runnable by humans or AI agents |
-
-Skills encode institutional knowledge directly into the system.
-
-**AI does not guess how your organization works. It executes the skills your organization defines.**
-
-> This is where Epoch diverges most sharply from current AI coding tools. Today's AI assistants (Copilot, Cursor, Cody, etc.) are powerful but context-starved. They see files, maybe a repo, but not the organizational reality: which services are being sunset, what the migration strategy is, which APIs are stable vs. experimental. Skills bridge this gap. They give AI agents *organizational intent*, not just code context. An AI operating within Epoch doesn't hallucinate a migration path — it follows the one your platform team defined, versioned, and tested.
-
----
-
-## Multi-Dimensional Awareness
-
-Every engineering organization operates across dimensions:
-
-```
-┌─────────────────────────────────────────────────────────┐
-│                    EPOCH GRAPH                          │
-│                                                         │
-│   Code ──── Infrastructure ──── Contracts               │
-│    │              │                  │                  │
-│   Data ──── Ownership ──── Reliability                  │
-│    │              │                  │                  │
-│  Security ──── Cost ──── Performance                    │
-│    │              │                  │                  │
-│  Compliance ── Product Lifecycle ── Knowledge           │
-│                                                         │
-└─────────────────────────────────────────────────────────┘
+$ epoch owners user-service
+  Team: platform-identity  |  Tier: 1  |  Status: active
+  On-call: alice@company.com, bob@company.com
 ```
 
-Epoch folds these dimensions into a **single operational graph**.
+An AI agent with access to the graph can answer cross-repository questions before making a change. Not by guessing — by querying a model of what actually exists.
 
-A change is not a diff in files.
-**It is a mutation in a multi-dimensional system.**
-
-The OS computes impact before execution.
-
-> Most developer tools operate on a single axis: code quality, infrastructure state, or observability metrics. But real engineering decisions are multi-axis. Choosing to add a caching layer is simultaneously a code change, an infrastructure change, a cost change, a reliability change, and a performance change. Epoch's graph makes these cross-cutting concerns visible and computable at decision time — not discoverable only in post-mortems.
+> The monorepo movement proved that co-locating code yields massive benefits: atomic commits, unified CI, simplified dependency management. But monorepos only model *code*. The OmniRepo extends this to model the entire product surface — infrastructure, policies, ownership, contracts — as a single versioned graph. The difference is not organizational convenience. It is the difference between AI that can see your files and AI that can understand your system.
 
 ---
 
-## Determinism in the AI Era
+### Skills: Executable Institutional Knowledge
 
-AI can now generate code, tests, migrations, and documentation.
+Engineering organizations know how to do things. Deploy a service. Rotate credentials. Deprecate an API version. Scaffold a new service. Patch a vulnerability across ten repositories at once. Respond to a production incident at 2am.
 
-But generation without system awareness introduces risk:
+This knowledge exists — but it lives in senior engineers' heads, in wiki pages that lag reality, in Slack threads from six months ago, in playbooks that nobody updates. It's not executable. It's not versioned. And it doesn't transfer.
 
-- Code that compiles but violates architectural boundaries
-- Tests that pass but don't cover the actual failure modes
-- Migrations that work locally but deadlock at scale
-- Infrastructure changes that are valid but wildly expensive
+In Epoch, it becomes **Skills** — named, versioned capabilities your organization has formally defined and can execute. A Skill knows the graph it operates on. It respects the policies that govern it. It can be run by a human, triggered by a CI event, or handed to an AI agent. The same Skill that a senior engineer runs manually today is the one an agent runs autonomously tomorrow.
 
-**Epoch grounds AI inside a deterministic framework:**
+Some Skills look like playbooks — a sequence of steps for a complex, multi-party operation like a zero-downtime database migration or a cross-team API deprecation. Some look like protocols — a defined response to a class of incident, with clear decision points and escalation paths. Some are utilities — discrete, composable actions that larger Skills assemble into workflows.
 
-- **Full graph visibility** — AI sees the entire system, not just open files
-- **Scoped execution** — AI operates within defined boundaries, not free-form
-- **Policy enforcement** — Guardrails that prevent violations before they happen
-- **Impact simulation** — Preview the blast radius of any change
-- **Reproducible outcomes** — Same input, same graph, same result
+What they share: they encode *how your organization does things*, not just what tools exist. An agent executing a Skill isn't guessing — it's following the process your team defined, tested, and trusts.
 
-**AI becomes an operator within the OS, not a free agent.**
-
-> The current trajectory of AI in software engineering is heading toward a dangerous local maximum: incredibly capable generation with no structural accountability. An AI can write a perfect microservice in isolation — but "in isolation" is exactly the problem. Epoch provides the *operating context* that turns AI from a talented but reckless intern into a disciplined operator. The key insight is that determinism doesn't limit AI — it *amplifies* it, because the AI can now make confident changes knowing the system will catch unintended consequences.
+Skills are the primary trust-building mechanism. Every operation encoded as a Skill is a surface area where AI can act consistently and auditably, without a human watching every step.
 
 ---
 
-## Organizational Alignment as Code
+### Policies: Encoded Guardrails
 
-R&D organizations struggle with alignment:
+Autonomy without constraints is risk. Epoch's policy engine makes organizational guardrails executable — evaluated against proposed changes before they land, not discovered in post-mortems.
 
-- **Who owns what?** — Ownership maps that live in spreadsheets, if they exist at all
-- **Which APIs are stable?** — Stability guarantees that live in someone's memory
-- **Which systems are deprecated?** — Sunset timelines that nobody tracks
-- **Which services are Tier 1?** — Criticality labels that aren't connected to policy
-- **Which migrations are in progress?** — Status updates scattered across Slack and Jira
-- **Which teams are affected?** — Impact analysis done manually, if at all
+Policies express what your organization has decided, at a system level. Not style preferences or linting rules — structural constraints that span services, teams, and time. A schema change to a shared database requires a migration in the same PR. A public API endpoint requires authentication. A change to a Tier 1 service during a freeze requires explicit override. A new dependency with a known critical CVE is blocked until patched or reviewed.
 
-In Epoch, ownership, policies, stability guarantees, and lifecycle states are **versioned artifacts** — committed, diffable, and enforceable.
+These aren't new ideas — most engineering teams already hold these as conventions. The difference is that conventions are enforced by code review attention, tribal knowledge, and luck. Policies are enforced by the system, consistently, regardless of who opened the PR or how busy the reviewers are.
 
-**Alignment becomes inspectable and enforceable, not aspirational.**
+Policy categories include: architectural boundaries, security requirements, reliability thresholds, cost limits, compliance constraints, dependency health, and change management.
 
-> This addresses one of the most under-discussed problems in engineering organizations: *organizational drift*. Just as code drifts from its intended architecture without automated enforcement, organizations drift from their intended operating model. Epoch treats organizational structure — ownership, tier classification, deprecation status, migration progress — as code. This means you can PR a change to service ownership the same way you PR a code change, with the same review process and audit trail.
+Policies run in CI, as pre-commit hooks, and as gates on Skill execution. They start in `warn` mode while a team builds confidence, then escalate to `block` once trusted.
+
+**Policies are what make it safe to extend AI autonomy.** The clearer the guardrails, the more confidently you can let agents roam within them.
 
 ---
 
-## Observability as Feedback, Not Afterthought
+### Feedback: Production Reality in the Graph
 
-Production signals are part of the system:
+A graph that only models static structure drifts from reality. Epoch closes this loop by ingesting production signals — observability, cost, deployment history — as first-class graph annotations.
 
-- **SLO violations** — automatically linked to the owning team and recent changes
-- **Latency regressions** — correlated with deployments in the graph
-- **Cost spikes** — traced to specific infrastructure mutations
-- **Error-rate anomalies** — mapped to services and their dependency chains
+SLO status, latency, error rates, cost trends, and recent deployment events attach to the graph nodes they belong to. This means:
 
-These signals feed back into the OmniRepo graph.
+- An agent can check service health before operating on it
+- A policy can block deploys while error rate exceeds threshold
+- A Skill can verify health at every step, not just at the end
+- Impact analysis reflects current production state, not just topology
 
-**Reliability and cost are not dashboards — they are constraints enforced by the OS.**
-
-> The observability industry has built incredible tools for *seeing* what's happening in production. But seeing is not the same as *acting*. When an SLO violation fires, today's workflow is: engineer gets paged → opens dashboard → searches logs → correlates with deploys → finds the PR → reads the diff → understands the change. Epoch collapses this chain. The graph already knows which change caused which deployment caused which regression, because the relationships are explicit. Observability becomes a feedback loop, not a forensic exercise.
-
----
-
-## The Evolution of DevOps
-
-DevOps unified development and operations. Epoch extends this evolution:
-
-| Era | What It Unified | Key Artifact |
-|-----|----------------|--------------|
-| **Pre-DevOps** | Nothing — dev threw code over the wall to ops | Manual runbooks |
-| **DevOps** | Development + Operations | CI/CD pipelines |
-| **Platform Engineering** | DevOps + Self-Service | Internal Developer Platforms |
-| **Epoch** | Code + Infra + Contracts + Ownership + Policy + AI + Knowledge | The OmniRepo Graph |
-
-This is not the end of DevOps. **It is the next epoch.**
-
-> Each era in this progression has been about raising the level of abstraction and expanding what's *modelable*. DevOps made deployments programmable. Platform Engineering made developer workflows self-service. Epoch makes the entire engineering organization — its code, its infrastructure, its knowledge, its policies, its people — into a single programmable system. The pattern is clear: we keep expanding the boundary of what software can reason about.
-
----
-
-## Open Source First
-
-Epoch begins as an open system.
-
-Because the Development OS of the AI era must be:
-
-- **Inspectable** — trust requires transparency in how decisions are made
-- **Forkable** — no organization should be locked into someone else's operating model
-- **Composable** — the plugin and skill ecosystem must be community-driven
-- **Extensible** — every team has unique workflows that can't be anticipated
-
-Every organization can define its own skills.
-Every ecosystem can extend the graph model.
-Every team can encode its own operating model.
-
-**Epoch is not a platform to consume. It is a foundation to build on.**
-
-> Open source is the only viable strategy for a system this foundational. History shows that developer infrastructure succeeds as open source (Linux, Git, Kubernetes, Terraform, VS Code) and fails as proprietary platforms. The reason is structural: a Development OS must integrate with everything, and that integration surface is too large for any single company to cover. Open source also enables the most powerful feature of all — a shared skills marketplace where organizations contribute and refine executable knowledge. Imagine a community-maintained library of skills for "migrate from PostgreSQL to CockroachDB" or "implement GDPR right-to-deletion" that encodes the collective wisdom of thousands of engineering teams.
-
----
-
-## Technical Pillars
-
-Epoch is built on five core pillars:
-
-```
-                        ┌───────────┐
-                        │  RUNTIME  │
-                        │ execution │
-                        │  engine   │
-                        └─────┬─────┘
-                              │
-              ┌───────────────┼───────────────┐
-              │               │               │
-        ┌─────┴─────┐   ┌─────┴─────┐   ┌─────┴─────┐
-        │   GRAPH   │   │  SKILLS   │   │  POLICY   │
-        │ product   │   │ executable│   │ encoded   │
-        │ topology  │   │ knowledge │   │ guardrails│
-        └─────┬─────┘   └─────┬─────┘   └─────┬─────┘
-              │               │               │
-              └───────────────┼───────────────┘
-                              │
-                        ┌─────┴─────┐
-                        │ FEEDBACK  │
-                        │production │
-                        │  signals  │
-                        └───────────┘
+```bash
+$ epoch health user-service
+  SLO: 99.95% availability (current: 99.97%, budget: 62% remaining)
+  P99 latency: 240ms (target: 300ms)
+  Monthly cost: $2,847 (budget: $3,000, trend: +8% MoM)
+  Last deploy: 3 hours ago — no anomalies detected
 ```
 
-| Pillar | Role |
-|--------|------|
-| **Graph** | The product topology — code, infra, contracts, data, ownership, and their relationships |
-| **Skills** | Executable institutional knowledge — versioned, composable, policy-bound workflows |
-| **Policy** | Encoded guardrails — security, cost, compliance, and architectural constraints |
-| **Runtime** | The execution engine — coordinates changes, simulates impact, orchestrates AI agents |
-| **Feedback** | Production signals — observability data that flows back into the graph as constraints |
+Production reality becomes a constraint the system enforces, not a dashboard engineers check after something breaks.
 
 ---
 
-## Why Now
+## Where Epoch Operates: Glue at Specific Junctions
 
-Three forces are converging that make Epoch possible — and necessary:
+Epoch is not a central orchestrator. The AI tooling landscape moves too fast — models, agents, and frameworks that are current today are superseded in months. Coupling Epoch to a specific generation of AI capability would be brittle.
 
-1. **AI agents are real, but ungrounded.** LLMs can generate code, tests, and infrastructure at superhuman speed. But without system-level context, they produce locally correct, globally incoherent output. The industry needs a structured environment for AI to operate within — not just a chat interface bolted onto an editor.
+Instead, Epoch operates as **glue between existing systems** — contributing organizational context at the specific junctions where that context matters most.
 
-2. **Complexity has outpaced tooling.** The microservices revolution, cloud-native infrastructure, and multi-platform delivery have made software systems genuinely too complex for any single engineer to hold in their head. The coordination overhead is now a larger bottleneck than the coding itself.
+**Code review augmentation** — An AI reviewer flags a pattern as non-standard. Epoch consults the graph, recognizes the pattern is an intentional architectural decision for that domain, and resolves the comment automatically — with a citation to the relevant policy. The reviewer didn't know; Epoch did.
 
-3. **The open source ecosystem is ready.** The building blocks exist: graph databases, policy engines (OPA/Cedar), IaC tools, AST parsers, OpenTelemetry, LSP, Tree-sitter, AI model APIs. What's missing is the *integration layer* — the OS that composes these into a coherent system. Epoch is that layer.
+**Observability gap detection** — After a change ships, Epoch checks whether the affected code paths have adequate monitoring coverage. If a new path isn't covered by existing alerts, Epoch surfaces the gap before it becomes an incident.
 
----
+**Nightly validation scans** — Epoch launches lightweight workers on a schedule to verify graph accuracy: are declared owners still active? Are deprecated services still receiving traffic? Have API contracts drifted from their specs? Discrepancies become issues or PRs, not tribal knowledge.
 
-## What Epoch Is Not
+**Cross-repo impact on every PR** — A developer opens a PR. Epoch computes graph-level impact across all repositories, annotates the PR with affected owners, policy results, and downstream risk — before any human reviews a line.
 
-To be precise about scope:
-
-- **Not an IDE** — Epoch does not replace your editor. It provides the system-level intelligence that your editor (and your AI assistant within it) can query.
-- **Not a CI/CD platform** — Epoch does not replace GitHub Actions or Jenkins. It is the coordination layer that decides *what* should be built, tested, and deployed — and *why*.
-- **Not an observability platform** — Epoch does not replace Datadog or Grafana. It consumes their signals and connects them to the product graph.
-- **Not a project management tool** — Epoch does not replace Jira or Linear. It provides the technical reality that those tools should be grounded in.
-- **Not a magic box** — Epoch requires intentional adoption. You model your system, encode your skills, and define your policies. The system gives back leverage, not miracles.
+In each case, Epoch contributes what no single AI tool has: organizational context that exists across the whole engineering surface, not just the open file.
 
 ---
 
-<div align="center">
+## The Progression
 
-**Epoch is a Development Operating System that turns your entire product, organization, and workflow into a single executable, versioned system.**
+Epoch is not a binary adoption. Each layer increases the surface area where AI can operate independently.
 
-*You're not defining a feature. You're defining infrastructure for the next decade.*
+| What you add | What agents can now do |
+|---|---|
+| Graph | Answer cross-repo impact questions; understand system topology |
+| Ownership + tiers | Route changes appropriately; apply correct caution to critical systems |
+| Policies | Evaluate changes against organizational rules automatically |
+| Skills | Execute complex multi-step operations consistently and auditably |
+| Feedback signals | Make decisions informed by production state; detect regressions |
+| Agent integration | Operate across the full engineering surface within defined bounds |
 
-[Get Started](#) · [Roadmap](ROADMAP.md) · [Documentation](#) · [Contributing](#) · [Community](#)
+Each layer is independently useful. None requires the next to deliver value. Adopt at the pace that matches your team's readiness — and apply different levels to different parts of your system simultaneously.
 
-</div>
+> The goal is not to push every system to full autonomy as fast as possible. The goal is to make the current level of AI autonomy in your organization **explicit, trustworthy, and improvable**. Every Skill you encode, every policy you define, every ownership boundary you declare narrows the gap between where agents operate today and where they could operate tomorrow.
+
+---
+
+## The Horizon: Full Autonomy
+
+Epoch is built toward a specific horizon: an R&D organization where AI agents can receive high-level intent and produce working, production-grade outcomes without human involvement in the execution loop.
+
+Not as a uniform state imposed everywhere at once — but as the ceiling any given system can reach, arrived at incrementally:
+
+- A feature spec is submitted. An agent designs the approach, implements and tests it, routes for review based on ownership and tier, and merges when policies pass.
+- A production incident fires. An agent diagnoses using graph-correlated observability, identifies the causative change, and executes a fix within the bounds of defined Skills and policies.
+- A CVE is published. An agent queries the graph for all consumers of the affected dependency, opens targeted PRs, runs tests, and routes approvals — across every repository simultaneously.
+- A quarterly infrastructure review runs automatically. An agent identifies waste, proposes changes, and stages them for human approval.
+
+The humans in this picture are not absent. They define intent, evolve policies, build new Skills, and make decisions that require organizational judgment. The execution layer runs on its own.
+
+---
+
+## Design Principles
+
+**Graph first.** The graph is the core of this system. Everything else is a projection of it. Accuracy of the graph is the highest-priority invariant.
+
+**Glue, not god.** Epoch integrates with existing tools — version control, CI, observability, ticketing, AI assistants — rather than replacing them. The value is in connecting organizational context to these tools, not in owning the whole stack.
+
+**Adopt, don't rebuild.** Tree-sitter for parsing. OPA or Cedar for policy. OpenTelemetry for signals. Epoch's value is the integration, not reimplementing solved problems.
+
+**Value at every layer.** Each phase must be independently useful. If graph-only isn't worth adopting on its own, nothing built on top of it will be either.
+
+**Gradual by design.** Teams, services, and products are not at the same point. Epoch supports heterogeneous autonomy levels within a single organization — and makes each system's current level explicit so it can be deliberately improved.
+
+**AI-agnostic.** The graph, Skills, and policies Epoch maintains are valuable regardless of which AI tools your team uses. Works with today's tools and with whatever comes next.
+
+**Dogfood immediately.** Epoch is used to build Epoch from the first working version onward.
+
+---
+
+## Open Source
+
+Epoch is open source because an organizational runtime for AI-driven software development must be:
+
+- **Inspectable** — trust requires transparency in how decisions are made and guardrails enforced
+- **Forkable** — no organization should be locked into someone else's model of how engineering works
+- **Composable** — the Skill and policy ecosystem grows through community contribution, not a single vendor's roadmap
+
+---
+
+## Where to Go Next
+
+- **[ROADMAP.md](./ROADMAP.md)** — build phases and an incremental adoption path for a real engineering organization
+- **[AI-LEVELS.md](./AI-LEVELS.md)** — how Epoch relates to the five levels of AI-assisted development, and why the L3→L4 transition is the core problem it solves
+- **[WHAT-EPOCH-IS.md](./WHAT-EPOCH-IS.md)** — the reasoning behind Epoch's design: what it is, what it isn't, and why
