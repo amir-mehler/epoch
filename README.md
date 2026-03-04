@@ -4,48 +4,53 @@
 
 ### The AI Development Operating System
 
-*The organizational runtime that lets AI agents understand, navigate, and operate across your entire engineering organization — not just one repository at a time.*
+*The organizational runtime that makes your entire AI toolchain smarter — not just one agent at a time.*
 
 </div>
 
 ---
 
-AI coding tools are good. Most engineering teams are already using them.
+Engineering teams are rapidly adopting AI workflow tools. Agents that interview you before starting. Session memory that persists decisions across context resets. Parallel subagents executing tasks in fresh, isolated contexts. Structured execution with hard gates before high-risk operations.
 
-But they're all doing the same thing: AI works on one file, one repository, one task at a time. A fast and capable worker — but narrow. The AI doesn't know what it doesn't know, and what it doesn't know is almost everything about your organization.
+These tools work. The patterns behind them are real, and teams that adopt them move noticeably faster.
 
-Which services depend on the change it's making.
-Whether that change violates an architectural rule your team agreed on two years ago.
-Who owns the affected system, and how critical it is.
-What your actual deployment process looks like — not the generic one, *yours*.
-Which APIs are stable contracts and which are internal details that will change next quarter.
-What migrations are in progress, what systems are being deprecated, what decisions have already been made.
+But they all share the same blind spot.
 
-So engineers compensate. They provide the organizational context manually. They do the cross-repo impact assessment, the ownership lookup, the policy check. The AI generates; the human coordinates.
+Every one of them operates within the scope of a session, a file, or a repository. None of them knows that the change they're executing will break a consumer three services away. None knows who owns the affected system, or that it's a Tier 1 service subject to a change freeze. None knows your deployment process, your compliance requirements, or the architectural decisions your team made eighteen months ago. They're capable within their scope — and completely blind outside it.
 
-**This doesn't scale. And it puts a ceiling on how autonomous AI can become in your organization.**
+**The agents aren't missing capability. They're missing organizational context.**
 
-Epoch removes that ceiling — by building the organizational context layer that AI agents are missing.
+And that context gap is what limits how autonomous AI can actually become in your engineering organization.
 
 ---
 
-## The Problem Is Context, Not Capability
+## The Missing Layer
 
-The gap between "AI writes code I review" and "AI ships features while I sleep" is not a model capability problem.
+A mature AI-assisted development stack looks something like this:
 
-It is an organizational context problem.
+```
+The developer describes intent
+   ↓
+An interview agent refines the spec, removes ambiguity, surfaces assumptions
+   ↓
+Epoch graph consulted — blast radius mapped, owners identified, policies evaluated
+   ↓
+Subagents execute task by task — fresh context, no pollution, hard gates before risk
+   ↓
+Session memory tracks state — goal drift prevented, plan stays in the attention window
+   ↓
+Cross-session memory persists decisions — the next session starts informed
+   ↓
+Epoch feedback loop — production signals flow back into the graph
+   ↓
+The next feature starts better than the last
+```
 
-For an AI agent to operate autonomously across an engineering organization — not just within a single file — it needs a live model of that organization. Not documentation. Not wiki pages. A **versioned, queryable representation** of:
+Every layer in this stack exists today as an open-source tool or pattern. The interview agent. The parallel subagents. The persistent session memory. The cross-session vector search.
 
-- Every service, API, data store, and infrastructure component, and how they relate
-- Who owns what, what tier it is, what its current lifecycle state is
-- The architectural rules, security constraints, and deployment guardrails that govern change
-- The actual processes your team uses — the ones that live in senior engineers' heads
-- The current state of production: health, cost, reliability, recent changes
+What doesn't exist is the organizational layer in the middle: the component that knows the graph, enforces the policies, carries institutional knowledge into every agent execution, and gets smarter with every cycle.
 
-None of this exists in a form that AI agents can reason over today. It lives in fragmented tools, tribal knowledge, and documentation that may or may not reflect reality.
-
-**Epoch makes your organization legible to AI.**
+That's Epoch.
 
 ---
 
@@ -53,20 +58,36 @@ None of this exists in a form that AI agents can reason over today. It lives in 
 
 Epoch is the **organizational runtime** for AI-assisted development.
 
-An operating system doesn't execute your programs — it provides the environment that programs run within. Epoch is that, for AI agents operating inside an engineering organization. The agents are Claude, Cursor, Copilot, or whatever comes next. Epoch doesn't replace them or try to orchestrate them. It provides the environment they operate within: the organizational context that turns a capable-but-narrow agent into one that can safely operate across your entire engineering surface.
+An operating system doesn't execute your programs — it provides the environment programs run within. Epoch is that, for AI agents operating inside an engineering organization. The agents are Claude, Cursor, Copilot, or whatever comes next. Epoch doesn't replace them or orchestrate them. It provides the substrate they operate on: the organizational context that turns a capable-but-narrow agent into one that can safely operate across your entire engineering surface.
 
-Three things compose that environment:
+Without Epoch, every agent starts from zero — no awareness of what it's touching, who owns it, what's downstream. With Epoch, every agent in the stack is grounded before it acts.
+
+Four things compose the runtime:
 
 ---
 
 ### The OmniRepo Graph
 
-The graph is the foundation. It is a live, versioned, queryable model of your engineering organization — derived continuously from source, not maintained by hand.
+The OmniRepo is not a monorepo. It's the next idea after monorepo.
 
-Node types: Service, Package, API, Infrastructure, DataStore, Team, Policy
-Edge types: dependsOn, ownedBy, exposesAPI, consumesAPI, deployedTo, governedBy
+The monorepo proved a thesis: co-locating code yields compounding benefits — atomic commits, unified CI, shared tooling, and the ability to reason across services in a single checkout. Teams that adopted monorepos well moved faster because of the visibility and cohesion they created.
 
-The graph is built by scanning what you already have: repositories, Kubernetes manifests, Terraform definitions, OpenAPI specs, protobuf schemas, package manifests, and ownership files. It does not require a migration or a new way of working — it reads what exists.
+The OmniRepo takes that same thesis and extends it in two directions. First, beyond code — infrastructure, API contracts, ownership, policies, and operational context belong in the same unified picture as the code they govern. Second, beyond a single repository — some repos are correctly kept separate (infrastructure carries different blast radius; GitOps config is watched directly by deployment systems). The OmniRepo is a virtual layer that spans as many repositories as your organization actually has. It doesn't mandate how you structure your source control. It connects what you have into a unified, queryable graph — so a single `epoch query` can reason across your application repos, your infrastructure, your API contracts, and your ownership declarations simultaneously.
+
+This is also where Epoch and your agents live. The OmniRepo carries not just code and infrastructure, but the operational context that makes AI agents effective: service-level `CLAUDE.md` files that ground any agent touching that service, `OWNERS.epoch` files that declare ownership and tier classification, Skills that encode how your organization operates, and policies that define what's allowed. An agent arriving at any service in the OmniRepo finds everything it needs before writing a single line.
+
+Some repositories belong inside the OmniRepo — application services, shared libraries, API contracts. Others are better kept separate:
+
+| Repository type | Inside OmniRepo | Separate |
+|---|---|---|
+| Application services | ✓ | |
+| Shared packages, APIs | ✓ | |
+| Observability — monitoring, alerts, dashboards | ✓ | |
+| Agent context, Skills, policies | ✓ | |
+| Infrastructure (Terraform) | | ✓ — different blast radius, access controls |
+| GitOps / ArgoCD config | | ✓ — deployment system watches this directly |
+
+Epoch scans all of it — inside and out — and builds the graph. The boundary is about where code lives, not about what Epoch can see.
 
 ```bash
 $ epoch scan
@@ -82,25 +103,23 @@ $ epoch owners user-service
   On-call: alice@company.com, bob@company.com
 ```
 
-An AI agent with access to the graph can answer cross-repository questions before making a change. Not by guessing — by querying a model of what actually exists.
+The graph is built by scanning what you already have: repositories, Kubernetes manifests, Terraform definitions, OpenAPI specs, protobuf schemas, package manifests, ownership files. No migration. No new workflow. It reads what exists — across all of it.
 
-> The monorepo movement proved that co-locating code yields massive benefits: atomic commits, unified CI, simplified dependency management. But monorepos only model *code*. The OmniRepo extends this to model the entire product surface — infrastructure, policies, ownership, contracts — as a single versioned graph. The difference is not organizational convenience. It is the difference between AI that can see your files and AI that can understand your system.
+An agent with access to the graph can answer cross-repository questions before making a change — not by guessing, but by querying a model of what actually exists.
 
 ---
 
 ### Skills: Executable Institutional Knowledge
 
-Engineering organizations know how to do things. Deploy a service. Rotate credentials. Deprecate an API version. Scaffold a new service. Patch a vulnerability across ten repositories at once. Respond to a production incident at 2am.
+Engineering organizations know how to do things. Deploy a service. Rotate credentials. Deprecate an API. Scaffold a new service. Patch a vulnerability across ten repositories simultaneously. Respond to a production incident at 2am.
 
-This knowledge exists — but it lives in senior engineers' heads, in wiki pages that lag reality, in Slack threads from six months ago, in playbooks that nobody updates. It's not executable. It's not versioned. And it doesn't transfer.
+This knowledge exists — in senior engineers' heads, in wiki pages that lag reality, in Slack threads from six months ago. It's not executable. It's not versioned. And it doesn't transfer.
 
-In Epoch, it becomes **Skills** — named, versioned capabilities your organization has formally defined and can execute. A Skill knows the graph it operates on. It respects the policies that govern it. It can be run by a human, triggered by a CI event, or handed to an AI agent. The same Skill that a senior engineer runs manually today is the one an agent runs autonomously tomorrow.
-
-Some Skills look like playbooks — a sequence of steps for a complex, multi-party operation like a zero-downtime database migration or a cross-team API deprecation. Some look like protocols — a defined response to a class of incident, with clear decision points and escalation paths. Some are utilities — discrete, composable actions that larger Skills assemble into workflows.
-
-What they share: they encode *how your organization does things*, not just what tools exist. An agent executing a Skill isn't guessing — it's following the process your team defined, tested, and trusts.
+In Epoch, it becomes **Skills** — named, versioned capabilities your organization has formally defined and can execute. A Skill knows the graph it operates on. It respects the policies that govern it. It can be run by a human, triggered by CI, or handed to an AI agent. The same Skill a senior engineer runs manually today is the one an agent runs autonomously tomorrow.
 
 Skills are the primary trust-building mechanism. Every operation encoded as a Skill is a surface area where AI can act consistently and auditably, without a human watching every step.
+
+What they share: they encode *how your organization does things*, not just what tools exist. An agent executing a Skill isn't guessing — it's following the process your team defined, tested, and trusts.
 
 ---
 
@@ -108,15 +127,11 @@ Skills are the primary trust-building mechanism. Every operation encoded as a Sk
 
 Autonomy without constraints is risk. Epoch's policy engine makes organizational guardrails executable — evaluated against proposed changes before they land, not discovered in post-mortems.
 
-Policies express what your organization has decided, at a system level. Not style preferences or linting rules — structural constraints that span services, teams, and time. A schema change to a shared database requires a migration in the same PR. A public API endpoint requires authentication. A change to a Tier 1 service during a freeze requires explicit override. A new dependency with a known critical CVE is blocked until patched or reviewed.
+Policies express what your organization has decided, at a system level: a schema change to a shared database requires a migration in the same PR; a public API endpoint requires authentication; a change to a Tier 1 service during a freeze requires explicit override; a new dependency with a known critical CVE is blocked until reviewed.
 
-These aren't new ideas — most engineering teams already hold these as conventions. The difference is that conventions are enforced by code review attention, tribal knowledge, and luck. Policies are enforced by the system, consistently, regardless of who opened the PR or how busy the reviewers are.
+Most engineering teams already hold these as conventions. The difference is that conventions are enforced by code review attention, tribal knowledge, and luck. Policies are enforced by the system — consistently, regardless of who opened the PR or how busy the reviewers are.
 
-Policy categories include: architectural boundaries, security requirements, reliability thresholds, cost limits, compliance constraints, dependency health, and change management.
-
-Policies run in CI, as pre-commit hooks, and as gates on Skill execution. They start in `warn` mode while a team builds confidence, then escalate to `block` once trusted.
-
-**Policies are what make it safe to extend AI autonomy.** The clearer the guardrails, the more confidently you can let agents roam within them.
+**Policies are what make it safe to extend AI autonomy.** The clearer the guardrails, the more confidently you can let agents roam within them. Policies run in CI, as pre-commit hooks, and as gates on Skill execution — starting in `warn` mode while a team builds confidence, escalating to `block` once trusted.
 
 ---
 
@@ -124,11 +139,11 @@ Policies run in CI, as pre-commit hooks, and as gates on Skill execution. They s
 
 A graph that only models static structure drifts from reality. Epoch closes this loop by ingesting production signals — observability, cost, deployment history — as first-class graph annotations.
 
-SLO status, latency, error rates, cost trends, and recent deployment events attach to the graph nodes they belong to. This means:
+SLO status, latency, error rates, cost trends, and recent deployment events attach to the graph nodes they belong to:
 
-- An agent can check service health before operating on it
-- A policy can block deploys while error rate exceeds threshold
-- A Skill can verify health at every step, not just at the end
+- An agent checks service health before operating on it
+- A policy blocks deploys while error rate exceeds threshold
+- A Skill verifies health at every step, not just at the end
 - Impact analysis reflects current production state, not just topology
 
 ```bash
@@ -147,7 +162,7 @@ Production reality becomes a constraint the system enforces, not a dashboard eng
 
 Epoch is not a central orchestrator. The AI tooling landscape moves too fast — models, agents, and frameworks that are current today are superseded in months. Coupling Epoch to a specific generation of AI capability would be brittle.
 
-Instead, Epoch operates as **glue between existing systems** — contributing organizational context at the specific junctions where that context matters most.
+Instead, Epoch operates as **glue between existing systems** — contributing organizational context at specific junctions where that context matters most.
 
 **Code review augmentation** — An AI reviewer flags a pattern as non-standard. Epoch consults the graph, recognizes the pattern is an intentional architectural decision for that domain, and resolves the comment automatically — with a citation to the relevant policy. The reviewer didn't know; Epoch did.
 
@@ -157,13 +172,25 @@ Instead, Epoch operates as **glue between existing systems** — contributing or
 
 **Cross-repo impact on every PR** — A developer opens a PR. Epoch computes graph-level impact across all repositories, annotates the PR with affected owners, policy results, and downstream risk — before any human reviews a line.
 
-In each case, Epoch contributes what no single AI tool has: organizational context that exists across the whole engineering surface, not just the open file.
+In each case, Epoch contributes what no single AI tool has: organizational context that spans the whole engineering surface, not just the open file.
+
+---
+
+## The Compounding Effect
+
+Epoch's deepest value is not any single integration — it's what happens when the layers compound.
+
+A session memory tool that can index against the Epoch graph surfaces relevant architectural decisions, not just conversation history. A subagent execution framework that consults Epoch before acting knows which services it's touching. An interview agent that queries Epoch before asking questions already knows what exists, and asks about what doesn't.
+
+Each tool in the stack gets better because the organizational substrate beneath it is richer. Every Skill encoded makes the next agent more capable. Every policy defined makes the next execution safer. Every feedback cycle makes the graph more accurate. The machine gets better with every use.
+
+The progression is incremental but the trajectory is clear: a flywheel where each delivery cycle produces not just the feature, but better infrastructure for the next feature.
 
 ---
 
 ## The Progression
 
-Epoch is not a binary adoption. Each layer increases the surface area where AI can operate independently.
+Each layer increases the surface area where AI can operate independently.
 
 | What you add | What agents can now do |
 |---|---|
